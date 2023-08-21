@@ -1,8 +1,8 @@
 {
-  "name": "step_05_v2_lambda",
+  "name": "todos_api",
   "version": "0.1.0",
   "bin": {
-    "step_05_v2_lambda": "bin/step_05_v2_lambda.js"
+    "todos_api": "bin/todos_api.js"
   },
   "scripts": {
     "build": "tsc",
@@ -12,16 +12,21 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
-    "@types/node": "20.4.5",
+    "@types/node": "^20.4.5",
+    "aws-cdk": "^2.90.0",
     "jest": "^29.6.2",
     "ts-jest": "^29.1.1",
-    "aws-cdk": "2.90.0",
     "ts-node": "^10.9.1",
     "typescript": "~5.1.6"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "^2.92.0-alpha.0",
+    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.92.0-alpha.0",
+    "@types/aws-lambda": "^8.10.119",
     "aws-cdk-lib": "2.90.0",
-    "constructs": "^10.0.0",
+    "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1440.0",
+    "constructs": "^10.2.69",
     "source-map-support": "^0.5.21"
   }
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { Step05V2LambdaStack } from '../lib/step_05_v2_lambda-stack';
+import { Step05V2LambdaStack } from '../lib/todos_api';
 
 const app = new cdk.App();
 new Step05V2LambdaStack(app, 'Step05V2LambdaStack', {
