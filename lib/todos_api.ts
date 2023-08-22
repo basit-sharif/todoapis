@@ -33,6 +33,14 @@ export class Step05V2LambdaStack extends cdk.Stack {
       environment: {
         TABLE_NAME: dbTable.tableName
       }
+    });
+    let deleteTodosLambdaFunc = new lambda.Function(this, "DeleteTodosLambda", {
+      runtime: lambda.Runtime.NODEJS_16_X,
+      handler: "Deletetodos.handler",
+      code: lambda.Code.fromAsset("lambda"),
+      environment: {
+        TABLE_NAME: dbTable.tableName
+      }
     })
 
     // apigateway to make http api for lambda function and allow methods and paths to intake
@@ -54,6 +62,7 @@ export class Step05V2LambdaStack extends cdk.Stack {
     // Api gateway integration with lambda to make route
     let getTodosLambdaIntegration = new apigwIntegrationv2.HttpLambdaIntegration("todoGetIntegration", getTodosLambdaFunc);
     let postTodosLambdaIntegration = new apigwIntegrationv2.HttpLambdaIntegration("todosPostIntegration", postTodosLambdaFunc)
+    let deleteTodosLambdaIntegration = new apigwIntegrationv2.HttpLambdaIntegration("todoDeleteIntegration", deleteTodosLambdaFunc)
 
     // add routes on gateway lambda integrated
     httpApi.addRoutes({
@@ -65,11 +74,17 @@ export class Step05V2LambdaStack extends cdk.Stack {
       path: "/posttodos",
       methods: [apigwv2.HttpMethod.POST],
       integration: postTodosLambdaIntegration,
+    });
+    httpApi.addRoutes({
+      path:"/deletetodos",
+      methods:[apigwv2.HttpMethod.DELETE],
+      integration:deleteTodosLambdaIntegration,
     })
 
     // grant access to lambda function for dynamodb
     dbTable.grantFullAccess(getTodosLambdaFunc)
     dbTable.grantFullAccess(postTodosLambdaFunc)
+    dbTable.grantFullAccess(deleteTodosLambdaFunc)
 
   }
 }
