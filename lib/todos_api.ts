@@ -42,6 +42,14 @@ export class Step05V2LambdaStack extends cdk.Stack {
         TABLE_NAME: dbTable.tableName
       }
     })
+    let updateTodosLambdaFunc = new lambda.Function(this, "UpdateTodosLambda", {
+      runtime: lambda.Runtime.NODEJS_16_X,
+      handler: "Updatetodos.handler",
+      code: lambda.Code.fromAsset("lambda"),
+      environment: {
+        TABLE_NAME: dbTable.tableName
+      }
+    })
 
     // apigateway to make http api for lambda function and allow methods and paths to intake
     let httpApi = new apigwv2.HttpApi(this, "todoListApi", {
@@ -63,6 +71,7 @@ export class Step05V2LambdaStack extends cdk.Stack {
     let getTodosLambdaIntegration = new apigwIntegrationv2.HttpLambdaIntegration("todoGetIntegration", getTodosLambdaFunc);
     let postTodosLambdaIntegration = new apigwIntegrationv2.HttpLambdaIntegration("todosPostIntegration", postTodosLambdaFunc)
     let deleteTodosLambdaIntegration = new apigwIntegrationv2.HttpLambdaIntegration("todoDeleteIntegration", deleteTodosLambdaFunc)
+    let updateTodosLambdaIntegration = new apigwIntegrationv2.HttpLambdaIntegration("todosUpdateIntegration", updateTodosLambdaFunc);
 
     // add routes on gateway lambda integrated
     httpApi.addRoutes({
@@ -76,15 +85,21 @@ export class Step05V2LambdaStack extends cdk.Stack {
       integration: postTodosLambdaIntegration,
     });
     httpApi.addRoutes({
-      path:"/deletetodos",
-      methods:[apigwv2.HttpMethod.DELETE],
-      integration:deleteTodosLambdaIntegration,
-    })
+      path: "/deletetodos",
+      methods: [apigwv2.HttpMethod.DELETE],
+      integration: deleteTodosLambdaIntegration,
+    });
+    httpApi.addRoutes({
+      path: "/updatetodos",
+      methods: [apigwv2.HttpMethod.PUT],
+      integration: updateTodosLambdaIntegration,
+    });
 
     // grant access to lambda function for dynamodb
-    dbTable.grantFullAccess(getTodosLambdaFunc)
-    dbTable.grantFullAccess(postTodosLambdaFunc)
-    dbTable.grantFullAccess(deleteTodosLambdaFunc)
+    dbTable.grantFullAccess(getTodosLambdaFunc);
+    dbTable.grantFullAccess(postTodosLambdaFunc);
+    dbTable.grantFullAccess(deleteTodosLambdaFunc);
+    dbTable.grantFullAccess(updateTodosLambdaFunc);
 
   }
 }
