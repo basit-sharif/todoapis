@@ -11,11 +11,13 @@ interface paramsType {
 export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
     const reqBody = JSON.parse(event.body || "{}");
     const PARTITION_KEY = reqBody.partitionKey;
+    const ID = reqBody.id;
 
     const params: paramsType = {
         TableName: process.env.TABLE_NAME,
         Key: {
             PARTITION_KEY: PARTITION_KEY,
+            ID:ID,
         },
     }
 

@@ -6,12 +6,14 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
     let reqBody = JSON.parse(event.body || "{}")
     const PARTITION_KEY = reqBody.partitionKey;
+    const ID = reqBody.id;
     const checked = reqBody.checked;
 
     let params: any = {
         TableName: process.env.TABLE_NAME,
         Key: {
             PARTITION_KEY: PARTITION_KEY,
+            ID:ID
         },
         UpdateExpression: "SET CHECKED = :isCheckedValue",
         ExpressionAttributeValues: {
