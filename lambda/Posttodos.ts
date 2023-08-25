@@ -5,9 +5,10 @@ const crypto = require('crypto');
 
 export async function handler(req: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
     let reqBody = JSON.parse(req.body || "{}")
-    let PARTITION_KEY = reqBody.partitionKey;
+    let USER_ID = reqBody.userId;
     let TODO_NAME = reqBody.todoName;
     let CHECKED = false;
+    let accessToken = reqBody.accessToken;
 
     function genrateUniqueIdForTodo() {
         const randomBytes = crypto.randomBytes(16); // 16 bytes = 128 bits
@@ -17,26 +18,32 @@ export async function handler(req: APIGatewayProxyEvent): Promise<APIGatewayProx
     const params = {
         TableName: process.env.TABLE_NAME,
         Item: {
-            PARTITION_KEY: PARTITION_KEY,
-            TODO_NAME: TODO_NAME,
-            CHECKED: CHECKED,
-            ID: genrateUniqueIdForTodo(),
-        }
+            todoId: genrateUniqueIdForTodo(),
+            userId: USER_ID,
+            todoName: TODO_NAME,
+            checked: CHECKED,
+        },
     };
 
-    try {
-        const res = await dynamodb.put(params).promise();
+    if (accessToken === "basit-sharifbasitsharif35@gmail.com") {
+        try {
+            const res = await dynamodb.put(params).promise();
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: "Successfully added todo" })
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: "Successfully added todo" })
+            }
+
+        } catch (error) {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: (error as { message: string }).message })
+            };
         }
-
-    } catch (error) {
+    } else {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: (error as { message: string }).message })
+            body: JSON.stringify({ message: "accessToken is invalid or required" })
         }
-
     }
 }

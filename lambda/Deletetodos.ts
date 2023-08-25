@@ -10,14 +10,14 @@ interface paramsType {
 
 export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
     const reqBody = JSON.parse(event.body || "{}");
-    const PARTITION_KEY = reqBody.partitionKey;
-    const ID = reqBody.id;
+    const TODO_ID = reqBody.todoId;
+    const USER_ID = reqBody.userId;
 
     const params: paramsType = {
         TableName: process.env.TABLE_NAME,
         Key: {
-            PARTITION_KEY: PARTITION_KEY,
-            ID:ID,
+            todoId: TODO_ID,
+            userId: USER_ID,
         },
     }
 
@@ -25,7 +25,7 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
         await dynamodb.delete(params).promise();
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: `Successfully deleted ${PARTITION_KEY}` })
+            body: JSON.stringify({ message: `Successfully deleted ${TODO_ID}` })
         }
     } catch (error) {
         return {

@@ -12,9 +12,13 @@ export class Step05V2LambdaStack extends cdk.Stack {
     // dynamodb connection
     const dbTable = new dynamodb.Table(this, "todoListTable", {
       partitionKey: {
-        name: "PARTITION_KEY",
+        name: "userId",
         type: dynamodb.AttributeType.STRING
       },
+      sortKey: {
+				name: "todoId",
+				type: dynamodb.AttributeType.STRING,
+			},
     });
 
     // lambda functions

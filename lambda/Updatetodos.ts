@@ -5,17 +5,17 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
     let reqBody = JSON.parse(event.body || "{}")
-    const PARTITION_KEY = reqBody.partitionKey;
-    const ID = reqBody.id;
+    const USERID = reqBody.userId;
+    const TODOID = reqBody.todoId;
     const checked = reqBody.checked;
 
     let params: any = {
         TableName: process.env.TABLE_NAME,
         Key: {
-            PARTITION_KEY: PARTITION_KEY,
-            ID:ID
+            userId: USERID,
+            todoId: TODOID
         },
-        UpdateExpression: "SET CHECKED = :isCheckedValue",
+        UpdateExpression: "SET checked = :isCheckedValue",
         ExpressionAttributeValues: {
             ":isCheckedValue": checked,
         },
@@ -27,7 +27,7 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
         await dynamodb.update(params).promise();
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: `Successfully Updated from ${!checked} to ${checked} of this field ${PARTITION_KEY}` })
+            body: JSON.stringify({ message: `Successfully Updated from ${!checked} to ${checked} of this field ${TODOID}` })
         }
     } catch (error) {
         return {
